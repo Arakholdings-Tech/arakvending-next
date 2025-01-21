@@ -4,26 +4,35 @@ namespace :postillion do
     xml_bytes = xml.encode('UTF-8').b
 
     # Create 4-byte length prefix (network byte order / big-endian)
-    length_prefix = [xml_bytes.length].pack('N')
+    length = [xml_bytes.length].pack('N')
 
     # Combine length prefix and XML
-    length_prefix + xml_bytes
+    length + xml_bytes
   end
 
   def read_response(socket)
     # Read 4-byte length prefix
-    length_bytes = socket.read(4)
-    message_length = length_bytes.unpack1('N')
+    length_bytes = socket.read(400_000)
+    message_length = length_bytes
+    puts message_length
 
     # Read the message body
-    socket.read(message_length)
+    # message = socket.read(message_length)
+    # puts message
+  end
+
+  def read_data_loop(socket)
+    while true
+      while IO.select([socket], nil, nil, 2) && (line = socket.recv(50))
+        p line
+      end
+    end
   end
 
   task connect: :environment do
     builder = EsocketBuilder.build_interface do |xml|
-      EsocketBuilder.initalize(xml, 'ARAK0001')
+      EsocketBuilder.initalize(xml, 'ARAK0002')
     end
-    puts builder
 
     xml = builder
 
@@ -31,11 +40,13 @@ namespace :postillion do
     message = prepare_message(xml)
 
     socket = TCPSocket.new('192.168.1.200', 23_001)
+
+    puts socket.inspect
     # Send the message
     socket.write(message)
 
     # Read response
-    response = read_response(response)
+    response = read_response(socket)
 
     puts response
   end
