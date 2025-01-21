@@ -52,11 +52,7 @@ namespace :connect do
           respond_with_ack(serial)
           next
         when 'SELECT_SELECTION'
-          communication_number, *selection_number = serial.read(length).unpack('C*')
-          3.times { puts '===================================' }
-
-          puts "Comm # #{communication_number}"
-          puts "Selection # #{selection_number.join('')}"
+          serial.read(length).unpack('C*')
           COMMAND_QUEUE << recieve_money
           serial.read(1)
 
