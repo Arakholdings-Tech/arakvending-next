@@ -3,6 +3,7 @@ class AsyncTcpReader
   TWO_BYTE_HEADER_SIZE = 2
   SIX_BYTE_HEADER_SIZE = 6
   EXTENDED_HEADER_MARKER = "\xFF\xFF".b
+  WRITE_TIMEOUT = 1 # Timeout in seconds for write operations
 
   def initialize(host, port)
     @host = host
@@ -10,12 +11,77 @@ class AsyncTcpReader
     @socket = nil
     @buffer = ''.b # Binary string buffer
     @running = false
+    @write_queue = Queue.new
+    @write_thread = nil
   end
 
   def connect
     @socket = TCPSocket.new(@host, @port)
     @socket.setsockopt(Socket::IPPROTO_TCP, Socket::TCP_NODELAY, 1)
     @running = true
+    start_write_thread
+  end
+
+  def start_write_thread
+    @write_thread = Thread.new do
+      while @running
+        begin
+          # Dequeue message with timeout to allow checking @running
+          message = begin
+            @write_queue.pop(true)
+          rescue StandardError
+            nil
+          end
+          if message
+            write_message_with_retry(message)
+          else
+            # No message available, sleep briefly
+            sleep 0.1
+          end
+        rescue IOError, Errno::EPIPE => e
+          puts "Write error: #{e.message}"
+          break
+        end
+      end
+    end
+  end
+
+  def write_message_with_retry(message)
+    retries = 3
+    length = message.bytesize
+    header = create_header(length)
+    frame = header + message
+
+    begin
+      raise "Socket not writable after #{WRITE_TIMEOUT} seconds" unless @socket.wait_writable(WRITE_TIMEOUT)
+
+      bytes_written = 0
+      while bytes_written < frame.bytesize
+        return unless @running # Check if we should stop
+
+        # Only write what's remaining
+        remaining = frame.byteslice(bytes_written..-1)
+
+        # Check writability before each write attempt
+        raise "Socket not writable after #{WRITE_TIMEOUT} seconds" unless @socket.wait_writable(WRITE_TIMEOUT)
+
+        # Write and track progress
+        bytes_written += @socket.write_nonblock(remaining)
+      end
+
+      @socket.flush if bytes_written > 0
+    rescue IO::WaitWritable
+      # Socket temporarily unavailable, retry if attempts remain
+      retries -= 1
+      if retries > 0
+        sleep 0.1
+        retry
+      else
+        puts 'Failed to write message after 3 attempts'
+      end
+    rescue StandardError => e
+      puts "Write error: #{e.message}"
+    end
   end
 
   def start_reading(&block)
@@ -95,6 +161,14 @@ class AsyncTcpReader
     @socket.write(header + data)
   end
 
+  def send_message(data)
+    @write_queue.push(data)
+  end
+
+  def message_queue_size
+    @write_queue.size
+  end
+
   def create_header(length)
     if length < SMALL_MESSAGE_MAX
       # Two-byte header
@@ -107,6 +181,10 @@ class AsyncTcpReader
 
   def stop
     @running = false
+    # Clear and close the write queue
+    @write_queue.clear
+    @write_thread&.join(2) # Wait up to 2 seconds for write thread to finish
+
     @socket&.close
   end
 end

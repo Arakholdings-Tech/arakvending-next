@@ -6,10 +6,12 @@ namespace :postillion do
 
     puts 'Connected to server'
 
-    async_reader.write Esocket::Messages.initialize_terminal('LINUX001')
+    async_reader.send_message Esocket::Messages.initialize_terminal('LINUX001')
+    # sleep 2
+    async_reader.send_message Esocket::Messages.transaction(100, 'LINUX001', rand(100_000..999_999))
 
     async_reader.start_reading do |message|
-      p message
+      puts Nokogiri::XML(message).to_xml
     end
 
     puts 'Press Ctrl+C to exit'

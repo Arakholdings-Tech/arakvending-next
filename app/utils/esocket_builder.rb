@@ -19,4 +19,22 @@ class EsocketBuilder
       xml.Register('Type' => 'EVENT', 'EventId' => 'DEBUG_ALL')
     end
   end
+
+  def self.close_terminal(xml, terminal_id)
+    xml.Admin('TerminalId' => terminal_id, 'Action' => 'CLOSE') do
+      xml.Register('Type' => 'CALLBACK', 'EventId' => 'DATA_REQUIRED')
+      xml.Register('Type' => 'EVENT', 'EventId' => 'DEBUG_ALL')
+    end
+  end
+
+  def self.transcation(xml, amount, terminal_id, transcation_id)
+    xml.Transaction('TransactionAmount' => amount, 'TerminalId' => terminal_id, 'Type' => 'PURCHASE',
+                    'TransactionId' => transcation_id) do
+    end
+  end
+
+  def self.reversal(xml, amount, _terminal_id)
+    xml.Transaction('TransactionAmount' => amount, 'Currency' => 'ZAR') do
+    end
+  end
 end
