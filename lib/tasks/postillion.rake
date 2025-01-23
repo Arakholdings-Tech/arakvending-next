@@ -7,13 +7,13 @@ namespace :postillion do
   end
 
   task connect: :environment do
-    async_reader = AsyncTcpReader.new('192.168.10.158', 23_001)
+    async_reader = AsyncTcpReader.new('192.168.1.200', 23_001)
 
     async_reader.connect
 
     puts 'Connected to server'
 
-    async_reader.send_message Esocket::Messages.initialize_terminal('LINUX001')
+    async_reader.send_message Esocket::Messages.initialize_terminal('ARAK0002')
     # sleep 2
 
     async_reader.start_reading
@@ -28,7 +28,7 @@ namespace :postillion do
       case attributes['Action']
       when 'INIT'
         if attributes['ActionCode'] == 'APPROVE'
-          async_reader.send_message Esocket::Messages.transaction(1000, 'LINUX001', rand(100_000..999_999))
+          async_reader.send_message Esocket::Messages.transaction(1000, 'ARAK0002', rand(100_000..999_999))
         else
           Rails.logger.error 'Failed to initialize terminal'
           async_reader.close
@@ -43,7 +43,7 @@ namespace :postillion do
     sleep while true
   rescue Interrupt
     puts "\nShutting down..."
-    async_reader.send_message Esocket::Messages.close_terminal('LINUX001')
+    async_reader.send_message Esocket::Messages.close_terminal('ARAK0002')
     sleep 2
   end
 end

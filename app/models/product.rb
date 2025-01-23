@@ -1,3 +1,4 @@
 class Product < ApplicationRecord
-  belongs_to :mechine
+  belongs_to :machine
+  has_many :payments
 end

@@ -7,3 +7,13 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
+
+(1..60).each do |seq|
+  Product.create(
+    name: "Product #{seq}",
+    quantity: 7,
+    price: rand(99..9000),
+    selection: seq,
+    machine: Machine.first
+  )
+end

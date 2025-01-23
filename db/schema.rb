@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_01_17_112119) do
+ActiveRecord::Schema[8.0].define(version: 2025_01_23_105930) do
   create_table "machines", force: :cascade do |t|
     t.string "machine_id"
     t.datetime "created_at", null: false
@@ -18,16 +18,39 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_17_112119) do
     t.index ["machine_id"], name: "index_machines_on_machine_id", unique: true
   end
 
+  create_table "payments", force: :cascade do |t|
+    t.integer "product_id", null: false
+    t.decimal "amount"
+    t.string "status"
+    t.datetime "completed_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_id"], name: "index_payments_on_product_id"
+  end
+
   create_table "products", force: :cascade do |t|
-    t.integer "mechine_id", null: false
+    t.integer "machine_id", null: false
     t.string "name"
     t.decimal "price"
     t.integer "selection"
     t.integer "quantity"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["mechine_id"], name: "index_products_on_mechine_id"
+    t.index ["machine_id"], name: "index_products_on_machine_id"
   end
 
-  add_foreign_key "products", "mechines"
+  create_table "transactions", force: :cascade do |t|
+    t.string "transaction_id"
+    t.string "status"
+    t.decimal "amount"
+    t.integer "payment_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["payment_id"], name: "index_transactions_on_payment_id"
+    t.index ["transaction_id"], name: "index_transactions_on_transaction_id", unique: true
+  end
+
+  add_foreign_key "payments", "products"
+  add_foreign_key "products", "machines"
+  add_foreign_key "transactions", "payments"
 end
