@@ -4,6 +4,7 @@ class AsyncTcpReader
   SIX_BYTE_HEADER_SIZE = 6
   EXTENDED_HEADER_MARKER = "\xFF\xFF".b
   WRITE_TIMEOUT = 1 # Timeout in seconds for write operations
+  MESSAGE_TYPES = %w[Transaction Event Callback Inquiry Admin].freeze
 
   def initialize(host, port)
     @host = host
@@ -13,6 +14,7 @@ class AsyncTcpReader
     @running = false
     @write_queue = Queue.new
     @write_thread = nil
+    @message_handlers = {}
   end
 
   def connect
@@ -20,6 +22,45 @@ class AsyncTcpReader
     @socket.setsockopt(Socket::IPPROTO_TCP, Socket::TCP_NODELAY, 1)
     @running = true
     start_write_thread
+  end
+
+  def on_message(type, &block)
+    @message_handlers[type] = block
+  end
+
+  def parse_xml_message(xml_string)
+    doc = Nokogiri::XML(xml_string) do |config|
+      config.strict.noblanks
+    end
+
+    # Register namespace
+    doc.remove_namespaces! # Remove namespace for easier parsing
+
+    # Look for any of our message types in the document
+    MESSAGE_TYPES.each do |type|
+      element = doc.at_css(type)
+      next unless element
+
+      # Extract message attributes
+      attributes = element.attributes.transform_values(&:value)
+
+      # Call the appropriate handler if registered
+      if @message_handlers[type]
+        @message_handlers[type].call(type, attributes, element)
+      else
+        puts "Received #{type} message (no handler registered)"
+        puts "Attributes: #{attributes.inspect}"
+      end
+
+      return type
+    end
+
+    puts 'Unknown message type received'
+    puts doc.to_xml
+    nil
+  rescue Nokogiri::XML::SyntaxError => e
+    puts "XML parsing error: #{e.message}"
+    nil
   end
 
   def start_write_thread
@@ -124,7 +165,7 @@ class AsyncTcpReader
       @buffer = @buffer[total_length..-1]
 
       # Process the complete message
-      yield message if block_given?
+      parse_xml_message(message)
     end
   end
 
@@ -186,5 +227,9 @@ class AsyncTcpReader
     @write_thread&.join(2) # Wait up to 2 seconds for write thread to finish
 
     @socket&.close
+  end
+
+  def close
+    stop
   end
 end
