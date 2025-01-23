@@ -2,7 +2,7 @@ class CreateTransactions < ActiveRecord::Migration[8.0]
   def change
     create_table :transactions do |t|
       t.string :transaction_id
-      t.string :status
+      t.string :status, default: :pending
       t.decimal :amount
       t.belongs_to :payment, null: false, foreign_key: true
 

@@ -25,7 +25,9 @@ class Esocket::Transport
   end
 
   def self.connect
-    new(Esocket.config.host, Esocket.config.port).connect
+    instance = new(Esocket.config.host, Esocket.config.port)
+    instance.connect
+    instance
   end
 
   def connect
@@ -34,6 +36,11 @@ class Esocket::Transport
     @running = true
     start_write_thread
     start_reading
+  end
+
+  def reconnect
+    @socket = TCPSocket.new(@host, @port)
+    @socket.setsockopt(Socket::IPPROTO_TCP, Socket::TCP_NODELAY, 1)
   end
 
   def on_message(type, &block)
@@ -45,7 +52,7 @@ class Esocket::Transport
   end
 
   def self.routes
-    yield_self
+    @routes ||= Esocket::Router
   end
 
   def parse_xml_message(xml_string)
@@ -53,7 +60,6 @@ class Esocket::Transport
       config.strict.noblanks
     end
 
-    # Register namespace
     doc.remove_namespaces! # Remove namespace for easier parsing
 
     # Look for any of our message types in the document
@@ -61,31 +67,26 @@ class Esocket::Transport
       element = doc.at_css(type)
       next unless element
 
-      # Extract message attributes
-      attributes = element.attributes.transform_values(&:value)
+      attributes = Hash.from_xml(element.to_xml)[type].with_indifferent_access
 
-      # Call the appropriate handler if registered
-      if Esocket::Transport.message_handlers[type]
-        Esocket::Transport.message_handlers[type].call(type, attributes, element)
+      if attributes['Action'].present?
+        Esocket::Router.dispatch(self, attributes['Action'], attributes, type)
+      elsif attributes['EventId'].present?
+        Esocket::Router.dispatch(self, attributes['EventId'], attributes, type)
+      elsif attributes['Type'].present?
+        Esocket::Router.dispatch(self, attributes['Type'], attributes, type)
       else
-        puts "Received #{type} message (no handler registered)"
-        puts "Attributes: #{attributes.inspect}"
+        Esocket::Router.dispatch(self, type, attributes)
       end
-
-      return type
     end
-
-    puts 'Unknown message type received'
-    puts doc.to_xml
-    nil
   rescue Nokogiri::XML::SyntaxError => e
     puts "XML parsing error: #{e.message}"
-    nil
   end
 
   def start_write_thread
     @write_thread = Thread.new do
       while @running
+
         begin
           # Dequeue message with timeout to allow checking @running
           message = begin
@@ -108,7 +109,7 @@ class Esocket::Transport
   end
 
   def write_message_with_retry(message)
-    retries = 3
+    retries = 1
     length = message.bytesize
     header = create_header(length)
     frame = header + message
@@ -159,8 +160,8 @@ class Esocket::Transport
         rescue IO::WaitReadable
           next
         rescue EOFError
-          puts 'Connection closed by remote host'
-          break
+          puts 'Connection closed by remote host, reconnecting..'
+          reconnect
         end
       end
     end
@@ -207,11 +208,6 @@ class Esocket::Transport
       # Skip FF FF marker and read 4-byte length
       @buffer[2, 4].unpack1('N') # Network byte order (big-endian)
     end
-  end
-
-  def handle_message(message)
-    # Override this method to handle complete messages
-    puts "Received message of length #{message.bytesize}: #{message}"
   end
 
   public

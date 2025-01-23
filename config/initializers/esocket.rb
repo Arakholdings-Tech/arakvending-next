@@ -4,4 +4,6 @@ Rails.application.config.after_initialize do
     config.host = '192.168.29.80'
     config.port = 23_001
   end
+
+  Dir[Rails.root.join('config', 'esocket_routes', '*.rb')].each { |file| require file }
 end

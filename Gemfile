@@ -63,3 +63,5 @@ group :test do
 end
 
 gem "uart", "~> 1.0"
+
+gem "async", "~> 2.21"

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_01_23_105930) do
+ActiveRecord::Schema[8.0].define(version: 2025_01_23_161431) do
   create_table "machines", force: :cascade do |t|
     t.string "machine_id"
     t.datetime "created_at", null: false
@@ -25,6 +25,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_23_105930) do
     t.datetime "completed_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "seq_number"
     t.index ["product_id"], name: "index_payments_on_product_id"
   end
 
@@ -41,7 +42,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_23_105930) do
 
   create_table "transactions", force: :cascade do |t|
     t.string "transaction_id"
-    t.string "status"
+    t.string "status", default: "pending"
     t.decimal "amount"
     t.integer "payment_id", null: false
     t.datetime "created_at", null: false

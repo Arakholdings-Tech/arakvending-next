@@ -25,10 +25,14 @@ class Vending::Transport
 
   MESSAGE_TYPES = COMMAND_MAP.values
 
+  def self.write_queue
+    @write_queue ||= Queue.new
+  end
+
   def initialize(port = '/dev/ttyUSB0')
     @message_handlers = {}
     @serial = UART.open port, 57_600
-    @write_queue = Queue.new
+    @queue_wait = false
   end
 
   def on_message(message, &block)
@@ -42,12 +46,13 @@ class Vending::Transport
   def start
     on_message 'POLL' do |_data, _length|
       message = begin
-        @write_queue.pop(true)
+        Vending::Transport.write_queue.pop(true)
       rescue StandardError
         nil
       end
       @serial.write message || Vending::Messages.ack
     end
+
     raise 'Not connected' unless @serial
 
     Thread.new do
@@ -67,7 +72,6 @@ class Vending::Transport
           length = @serial.read(1).unpack1('C')
           data = @serial.read(length).unpack('C*')
           @serial.read(1)
-
           read_response(get_command(command), data, length)
         rescue IO::WaitReadable
           next
@@ -80,8 +84,6 @@ class Vending::Transport
   end
 
   def read_response(command, data, length)
-    @serial.write Vending::Messages.ack
-
     MESSAGE_TYPES.each do |type|
       next unless type == command
 
@@ -94,9 +96,15 @@ class Vending::Transport
 
       return type
     end
+
+    @serial.write Vending::Messages.ack
   end
 
   def send_message(data)
-    @write_queue.push(data)
+    Vending::Transport.send_message(data)
+  end
+
+  def self.send_message(data)
+    write_queue.push(data)
   end
 end
