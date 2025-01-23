@@ -14,6 +14,8 @@ class PurchaseController < MessageController
     else
       transaction.failed!
       transaction.payment.incomplete!
+
+      Vending::Transport.send_message Vending::Messages.cancel_selection
     end
   end
 end

@@ -8,7 +8,8 @@ class Vending::Messages
     select_selection: 0x05,
     dispensing_status: 0x04,
     report_selection: 0x11,
-    recieve_money: 0x27
+    recieve_money: 0x27,
+    cancel_selection: 0x05
   }.freeze
 
   class << self
@@ -32,6 +33,22 @@ class Vending::Messages
         0, 20, 0, 0
       ]
       puts data.inspect
+      data << calculate_bcc(data.pack('C*'))
+
+      data.pack('C*')
+    end
+
+    def cancel_selection
+      data = [
+        0xfa,
+        0xfb,
+        COMMANDS[:cancel_selection],
+        0x03,
+        HexGenerator.next,
+        0,
+        0
+      ]
+
       data << calculate_bcc(data.pack('C*'))
 
       data.pack('C*')
