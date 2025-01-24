@@ -65,3 +65,5 @@ end
 gem "uart", "~> 1.0"
 
 gem "async", "~> 2.21"
+
+gem "rubocop-performance", "~> 1.23"

@@ -10,7 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_01_23_161431) do
+ActiveRecord::Schema[8.0].define(version: 2025_01_24_102519) do
+  create_table "io_messages", force: :cascade do |t|
+    t.binary "payload"
+    t.string "status"
+    t.string "queue"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["queue"], name: "index_io_messages_on_queue"
+  end
+
   create_table "machines", force: :cascade do |t|
     t.string "machine_id"
     t.datetime "created_at", null: false

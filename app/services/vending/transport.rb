@@ -8,7 +8,7 @@ class Vending::Transport
     dispensing_status: 'DISPENSING_STATUS',
     report_selection: 'REPORT_SELECTION',
     select_selection: 'SELECT_SELECTION',
-    recieve_money: 'RECIEVE_MONEY'
+    recieve_money: 'RECIEVE_MONEY',
   }.freeze
 
   COMMANDS = {
@@ -20,7 +20,7 @@ class Vending::Transport
     select_selection: 0x05,
     dispensing_status: 0x04,
     report_selection: 0x11,
-    recieve_money: 0x27
+    recieve_money: 0x27,
   }.freeze
 
   MESSAGE_TYPES = COMMAND_MAP.values

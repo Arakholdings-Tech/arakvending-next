@@ -1,10 +1,8 @@
 namespace :connect do
   task listen: :environment do
+    SEQ_NUMS = []
     vending_transport = Vending::Transport.new
 
-    vending_transport.on_message 'MACHINE_STATUS' do |data, _length, _transport|
-    end
-    SEQ_NUMS = []
     vending_transport.on_message 'SELECT_SELECTION' do |data, _length|
       seq_number, *selection_number = data
       next if SEQ_NUMS.include? seq_number
@@ -16,15 +14,15 @@ namespace :connect do
 
       product = Product.find_by selection: selection
       puts product.inspect
-      next unless product.present?
+      next if product.blank?
 
       payment = product.payments.create(amount: product.price, status: 'queued')
 
       Payments::Queued.trigger(payment)
     end
 
-    vending_transport.start
     transport = Esocket::Transport.connect
+    vending_transport.start
 
     Esocket::Transport.send_message Esocket::Messages.initialize_terminal
 

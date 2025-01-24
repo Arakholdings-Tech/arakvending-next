@@ -1,5 +1,6 @@
 class PurchaseController < MessageController
   def process(_transport, _message_type, data)
+    puts data.inspect
     transaction = Transaction.find_by transaction_id: data[:TransactionId]
 
     return unless transaction.present?
