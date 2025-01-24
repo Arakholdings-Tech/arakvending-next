@@ -35,7 +35,7 @@ class Vending::Messages
     end
 
     def recieve_money(amount)
-      data = [0xfa, 0xfb, COMMANDS[:recieve_money], 0x06, HexGenerator.next, 0x03, *format_money(amount)]
+      data = [0xfa, 0xfb, COMMANDS[:recieve_money], 0x06, HexGenerator.next, 0x03, 0, 20, 0, 0]
       data << calculate_bcc(data.pack('C*'))
       data.pack('C*')
     end

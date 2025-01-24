@@ -3,6 +3,9 @@ namespace :connect do
     SEQ_NUMS = []
     vending_transport = Vending::Transport.new
 
+    vending_transport.on_message 'MACHINE_STATUS' do |data, _length|
+    end
+
     vending_transport.on_message 'SELECT_SELECTION' do |data, _length|
       seq_number, *selection_number = data
       next if SEQ_NUMS.include? seq_number
@@ -22,7 +25,7 @@ namespace :connect do
     end
 
     transport = Esocket::Transport.connect
-    vending_transport.start
+    vending_transport.connect
 
     Esocket::Transport.send_message Esocket::Messages.initialize_terminal
 
