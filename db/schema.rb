@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_01_24_102519) do
+ActiveRecord::Schema[8.0].define(version: 2025_01_24_152442) do
   create_table "io_messages", force: :cascade do |t|
     t.binary "payload"
     t.string "status"
@@ -29,33 +29,36 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_24_102519) do
 
   create_table "payments", force: :cascade do |t|
     t.integer "product_id", null: false
-    t.decimal "amount"
     t.string "status"
     t.datetime "completed_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "seq_number"
+    t.integer "amount_cents", default: 0, null: false
+    t.string "amount_currency", default: "USD", null: false
     t.index ["product_id"], name: "index_payments_on_product_id"
   end
 
   create_table "products", force: :cascade do |t|
     t.integer "machine_id", null: false
     t.string "name"
-    t.decimal "price"
     t.integer "selection"
     t.integer "quantity"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "price_cents", default: 0, null: false
+    t.string "price_currency", default: "USD", null: false
     t.index ["machine_id"], name: "index_products_on_machine_id"
   end
 
   create_table "transactions", force: :cascade do |t|
     t.string "transaction_id"
     t.string "status", default: "pending"
-    t.decimal "amount"
     t.integer "payment_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "amount_cents", default: 0, null: false
+    t.string "amount_currency", default: "USD", null: false
     t.index ["payment_id"], name: "index_transactions_on_payment_id"
     t.index ["transaction_id"], name: "index_transactions_on_transaction_id", unique: true
   end

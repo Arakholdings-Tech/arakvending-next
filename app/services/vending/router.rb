@@ -28,6 +28,7 @@ class Vending::Router
         controller.dispatch(route[:action], transport, message_type, message)
       else
         Rails.logger.warn "No route found for message type: #{message_type}"
+        puts "No route found for message type: #{message_type}"
       end
     end
   end

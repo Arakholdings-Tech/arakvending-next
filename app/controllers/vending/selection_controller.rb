@@ -11,7 +11,6 @@ class Vending::SelectionController < MessageController
     return if selection.zero?
 
     product = Product.find_by selection: selection
-    puts product.inspect
     return if product.blank?
 
     payment = product.payments.create(amount: product.price, status: 'queued')
@@ -23,5 +22,12 @@ class Vending::SelectionController < MessageController
     _, _, selection, quantity = data
 
     Product.find_by(selection: selection).update(quantity: quantity)
+  end
+
+  def price(transport, command, data)
+    _, _, selection, *price = data
+    product = Product.find_by(selection: selection)
+    price = price.pack('C*').unpack1('N')
+    product.update(price_cents: price)
   end
 end

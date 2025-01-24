@@ -40,15 +40,6 @@ class Vending::Transport < Transport
   end
 
   def start_write_loop
-    on_message 'POLL' do |_data, _length|
-      message = begin
-        Vending::Transport.next_message('vending')
-      rescue StandardError
-        nil
-      end
-      puts message.inspect
-      @serial.write message || Vending::Messages.ack
-    end
   end
 
   MESSAGE_TYPES = Vending::Messages::COMMANDS.keys.map { |t| t.to_s.upcase }

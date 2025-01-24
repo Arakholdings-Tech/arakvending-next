@@ -2,14 +2,15 @@ class Product < ApplicationRecord
   belongs_to :machine
   has_many :payments, dependent: :destroy
 
+  monetize :price_cents, as: 'price'
+
   after_save_commit :update_price
   after_save_commit :update_quantity
 
   def update_price
-    return unless saved_change_to_price?
+    return unless saved_change_to_price_cents?
 
-    normalized_price = (price * 100).to_i
-    Vending::Transport.send_message Vending::Messages.set_slection_price(normalized_price, selection)
+    Vending::Transport.send_message Vending::Messages.set_slection_price(price_cents, selection)
   end
 
   def update_quantity

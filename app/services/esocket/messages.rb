@@ -12,9 +12,8 @@ class Esocket::Messages
   end
 
   def self.transaction(amount, transaction_id)
-    puts (amount * 100).to_i
     EsocketBuilder.build_interface do |xml|
-      EsocketBuilder.transcation(xml, (amount * 100).to_i, Esocket.config.terminal_id, transaction_id)
+      EsocketBuilder.transcation(xml, amount, Esocket.config.terminal_id, transaction_id)
     end
   end
 

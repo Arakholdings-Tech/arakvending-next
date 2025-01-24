@@ -3,5 +3,6 @@ Rails.application.config.to_prepare do
     command 'POLL', to: 'vending/ack#handle'
     command 'SELECT_SELECTION', to: 'vending/selection#selected'
     command 'SET_SELECTION_INVENTORY', to: 'vending/selection#inventory'
+    command 'SET_SELECTION_PRICE', to: 'vending/selection#price'
   end
 end
