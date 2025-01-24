@@ -1,0 +1,2 @@
+module Vending::AckHelper
+end

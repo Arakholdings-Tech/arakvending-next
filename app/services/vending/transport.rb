@@ -27,12 +27,16 @@ class Vending::Transport < Transport
           length = @serial.read(1).unpack1('C')
           data = @serial.read(length).unpack('C*')
           @serial.read(1)
-          read_response(command, data, length)
+          read_response(command, data)
         rescue IO::WaitReadable
           next
         end
       end
     end
+  end
+
+  def write_message(message)
+    @serial.write message
   end
 
   def start_write_loop
@@ -42,29 +46,21 @@ class Vending::Transport < Transport
       rescue StandardError
         nil
       end
+      puts message.inspect
       @serial.write message || Vending::Messages.ack
     end
   end
 
-  MESSAGE_TYPES = Vending::Messages::COMMAND_MAP.values
+  MESSAGE_TYPES = Vending::Messages::COMMANDS.keys.map { |t| t.to_s.upcase }
 
   def on_message(message, &)
     Vending::Transport.on_message(message, &)
   end
 
-  def read_response(command, data, length)
-    MESSAGE_TYPES.each do |type|
-      next unless type == command
+  def read_response(command, data)
+    Vending::Router.dispatch(self, command, data)
 
-      if Vending::Transport.message_handlers[type]
-        Vending::Transport.message_handlers[type].call(data, length)
-      else
-        puts "Received #{type} message (no handler registered)"
-        puts "Attributes: #{data.inspect}"
-      end
-
-      return type
-    end
+    @serial.write Vending::Messages.ack
   end
 
   def send_message(data)
@@ -87,5 +83,9 @@ class Vending::Transport < Transport
 
   def self.on_message(type, &block)
     message_handlers[type] = block
+  end
+
+  def self.routes
+    @routes ||= Vending::Router
   end
 end

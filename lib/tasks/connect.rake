@@ -6,24 +6,6 @@ namespace :connect do
     vending_transport.on_message 'MACHINE_STATUS' do |data, _length|
     end
 
-    vending_transport.on_message 'SELECT_SELECTION' do |data, _length|
-      seq_number, *selection_number = data
-      next if SEQ_NUMS.include? seq_number
-
-      SEQ_NUMS << seq_number
-      selection = selection_number.join.to_i
-
-      next if selection.zero?
-
-      product = Product.find_by selection: selection
-      puts product.inspect
-      next if product.blank?
-
-      payment = product.payments.create(amount: product.price, status: 'queued')
-
-      Payments::Queued.trigger(payment)
-    end
-
     transport = Esocket::Transport.connect
     vending_transport.connect
 

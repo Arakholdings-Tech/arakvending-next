@@ -1,0 +1,2 @@
+module Vending::SelectionHelper
+end

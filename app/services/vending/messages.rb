@@ -1,16 +1,4 @@
 class Vending::Messages
-  COMMAND_MAP = {
-    poll: 'POLL',
-    ack: 'ACK',
-    machine_status: 'MACHINE_STATUS',
-    request_sync_info: 'REQUEST_SYNC_INFO',
-    select_buy: 'REQUEST_BUY',
-    dispensing_status: 'DISPENSING_STATUS',
-    report_selection: 'REPORT_SELECTION',
-    select_selection: 'SELECT_SELECTION',
-    recieve_money: 'RECIEVE_MONEY',
-  }.freeze
-
   COMMANDS = {
     poll: 0x41,
     ack: 0x42,
@@ -22,6 +10,9 @@ class Vending::Messages
     report_selection: 0x11,
     recieve_money: 0x27,
     cancel_selection: 0x05,
+    set_selection_price: 0x12,
+    set_selection_inventory: 0x13,
+    set_selection_capacity: 0x14,
   }.freeze
 
   class << self
@@ -51,7 +42,52 @@ class Vending::Messages
     end
 
     def get_command(command)
-      COMMAND_MAP[COMMANDS.key(command)]
+      COMMANDS.key(command).to_s.upcase
+    end
+
+    def set_slection_price(price, selection)
+      data = [
+        0xfa,
+        0xfb,
+        COMMANDS[:set_selection_price],
+        0x07,
+        HexGenerator.next,
+        0,
+        selection,
+        *[price].pack('N').unpack('C*'),
+      ]
+      data << calculate_bcc(data.pack('C*'))
+      data.pack('C*')
+    end
+
+    def set_selection_inventory(selection, inventory)
+      data = [
+        0xfa,
+        0xfb,
+        COMMANDS[:set_selection_inventory],
+        0x04,
+        HexGenerator.next,
+        0,
+        selection,
+        inventory,
+      ]
+      data << calculate_bcc(data.pack('C*'))
+      data.pack('C*')
+    end
+
+    def set_selection_capacity(selection, capacity)
+      data = [
+        0xfa,
+        0xfb,
+        COMMANDS[:set_selection_capacity],
+        0x04,
+        HexGenerator.next,
+        0,
+        selection,
+        capacity,
+      ]
+      data << calculate_bcc(data.pack('C*'))
+      data.pack('C*')
     end
   end
 end
