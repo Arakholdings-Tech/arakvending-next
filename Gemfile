@@ -69,3 +69,5 @@ gem "async", "~> 2.21"
 gem "rubocop-performance", "~> 1.23"
 
 gem "money-rails", "~> 1.15"
+
+gem "dotenv", "~> 3.1"

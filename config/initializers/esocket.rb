@@ -1,7 +1,7 @@
 Rails.application.config.after_initialize do
   Esocket.configure do |config|
-    config.terminal_id = 'ARAK0002'
-    config.host = '127.0.0.1'
-    config.port = 23_001
+    config.terminal_id = ENV.fetch('ESOCKET_TERMINAL_ID', nil)
+    config.host = ENV.fetch('ESOCKET_HOST', nil)
+    config.port = ENV.fetch('ESOCKET_PORT', nil)
   end
 end

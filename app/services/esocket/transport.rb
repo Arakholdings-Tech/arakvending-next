@@ -4,7 +4,7 @@ class Esocket::Transport
   SIX_BYTE_HEADER_SIZE = 6
   EXTENDED_HEADER_MARKER = "\xFF\xFF".b
   WRITE_TIMEOUT = 1 # Timeout in seconds for write operations
-  MESSAGE_TYPES = %w[Transaction Event Callback Inquiry Admin].freeze
+  MESSAGE_TYPES = ['Transaction', 'Event', 'Callback', 'Inquiry', 'Admin'].freeze
 
   def self.write_queue
     @write_queue ||= Queue.new
@@ -43,8 +43,8 @@ class Esocket::Transport
     @socket.setsockopt(Socket::IPPROTO_TCP, Socket::TCP_NODELAY, 1)
   end
 
-  def on_message(type, &block)
-    Esocket::Transport.on_message(type, &block)
+  def on_message(type, &)
+    Esocket::Transport.on_message(type, &)
   end
 
   def self.on_message(type, &block)

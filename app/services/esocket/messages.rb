@@ -17,9 +17,9 @@ class Esocket::Messages
     end
   end
 
-  def self.reversal(amount)
+  def self.reversal(transaction_id)
     EsocketBuilder.build_interface do |xml|
-      EsocketBuilder.reversal(xml, amount, Esocket.config.terminal_id)
+      EsocketBuilder.reversal(xml, transaction_id, Esocket.config.terminal_id)
     end
   end
 end

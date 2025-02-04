@@ -5,7 +5,7 @@ class EsocketBuilder
     builder = Nokogiri::XML::Builder.new do |xml|
       xml['Esp'].Interface(
         'Version' => '1.0',
-        'xmlns:Esp' => NAMESPACE
+        'xmlns:Esp' => NAMESPACE,
       ) do
         yield(xml) if block_given?
       end
@@ -29,12 +29,12 @@ class EsocketBuilder
 
   def self.transcation(xml, amount, terminal_id, transcation_id)
     xml.Transaction('TransactionAmount' => amount, 'TerminalId' => terminal_id, 'Type' => 'PURCHASE',
-                    'TransactionId' => transcation_id) do
+      'TransactionId' => transcation_id,) do
     end
   end
 
-  def self.reversal(xml, amount, _terminal_id)
-    xml.Transaction('TransactionAmount' => amount, 'Currency' => 'ZAR') do
-    end
+  def self.reversal(xml, transcation_id, terminal_id)
+    xml.Transaction('TerminalId' => terminal_id, 'Type' => 'PURCHASE',
+      'TransactionId' => transcation_id, 'Reversal' => 'TRUE',)
   end
 end
