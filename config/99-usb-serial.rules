@@ -1,0 +1,2 @@
+# /etc/udev/rules.d/99-usb-serial.rules
+SUBSYSTEM=="tty", KERNEL=="ttyUSB0", MODE="0777"

@@ -1,0 +1,21 @@
+[Unit]
+Description=Rails Application Server
+After=network.target
+
+[Service]
+Type=simple
+StandardOutput=journal
+WorkingDirectory=/home/system/arakvending-next
+
+# RVM environment setup
+Environment=HOME=/home/system
+Environment=PATH=/home/system/.rvm/bin:/home/system/.rvm/gems/ruby-3.3.5/bin:/usr/local/bin:/usr/bin:/bin
+ExecStartPre=/bin/bash -lc 'source /home/system/.rvm/scripts/rvm'
+ExecStart=/bin/bash -lc 'source /home/system/.rvm/scripts/rvm && bundle exec rails connect:listen'
+
+Restart=always
+RestartSec=5
+SyslogIdentifier=rails-app
+
+[Install]
+WantedBy=default.target
