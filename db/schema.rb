@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_01_24_152442) do
+ActiveRecord::Schema[8.0].define(version: 2025_02_07_105005) do
   create_table "io_messages", force: :cascade do |t|
     t.binary "payload"
     t.string "status"
@@ -59,6 +59,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_24_152442) do
     t.datetime "updated_at", null: false
     t.integer "amount_cents", default: 0, null: false
     t.string "amount_currency", default: "USD", null: false
+    t.string "card_number"
+    t.string "rrn"
+    t.string "method"
+    t.string "response_message"
+    t.integer "cashback_amount_cents", default: 0, null: false
+    t.string "cashback_amount_currency", default: "USD", null: false
+    t.integer "amount_approved_cents", default: 0, null: false
+    t.string "amount_approved_currency", default: "USD", null: false
     t.index ["payment_id"], name: "index_transactions_on_payment_id"
     t.index ["transaction_id"], name: "index_transactions_on_transaction_id", unique: true
   end
