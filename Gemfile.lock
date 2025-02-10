@@ -75,10 +75,12 @@ GEM
     addressable (2.8.7)
       public_suffix (>= 2.0.2, < 7.0)
     ast (2.4.2)
-    async (2.21.2)
+    async (2.22.0)
       console (~> 1.29)
       fiber-annotation
-      io-event (~> 1.6, >= 1.6.5)
+      io-event (~> 1.7)
+      metrics (~> 0.12)
+      traces (~> 0.15)
     base64 (0.2.0)
     bcrypt_pbkdf (1.1.1)
     bcrypt_pbkdf (1.1.1-arm64-darwin)
@@ -133,7 +135,7 @@ GEM
       activesupport (>= 6.0.0)
       railties (>= 6.0.0)
     io-console (0.8.0)
-    io-event (1.7.5)
+    io-event (1.8.4)
     irb (1.15.1)
       pp (>= 0.6.0)
       rdoc (>= 4.0.0)
@@ -165,6 +167,7 @@ GEM
       net-smtp
     marcel (1.0.4)
     matrix (0.4.2)
+    metrics (0.12.1)
     mini_mime (1.1.5)
     minitest (5.25.4)
     monetize (1.13.0)
@@ -352,6 +355,7 @@ GEM
     thruster (0.1.10-x86_64-darwin)
     thruster (0.1.10-x86_64-linux)
     timeout (0.4.3)
+    traces (0.15.2)
     turbo-rails (2.0.11)
       actionpack (>= 6.0.0)
       railties (>= 6.0.0)
@@ -390,7 +394,7 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
-  async (~> 2.21)
+  async (~> 2.22)
   bootsnap
   brakeman
   capybara
