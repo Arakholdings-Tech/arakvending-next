@@ -1,6 +1,9 @@
 class PurchaseController < MessageController
   def process(_transport, _message_type, data)
     transaction = Transaction.find_by transaction_id: data[:TransactionId]
+
+    return unless transaction.present?
+
     transaction.update(
       card_number: data[:CardNumber],
       rrn: data[:RetrievalRefNr],
@@ -8,9 +11,6 @@ class PurchaseController < MessageController
       cashback_amount_cents: 0,
       amount_approved_cents: data[:TransactionAmount],
     )
-
-    return unless transaction.present?
-
     return if ['completed', 'incomplete'].include? transaction.payment.status
 
     if data[:ActionCode] == 'APPROVE'
