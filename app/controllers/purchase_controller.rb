@@ -1,11 +1,18 @@
 class PurchaseController < MessageController
   def process(_transport, _message_type, data)
-    puts data.inspect
+    puts data.to_json
     transaction = Transaction.find_by transaction_id: data[:TransactionId]
+    transaction.update(
+      card_number: data[:CardNumber],
+      rrn: data[:RetrievalRefNr],
+      response_message: data[:ActionCode],
+      cashback_amount_cents: 0,
+      amount_approved_cents: data[:TransactionAmount],
+    )
 
     return unless transaction.present?
 
-    return if %w[completed incomplete].include? transaction.payment.status
+    return if ['completed', 'incomplete'].include? transaction.payment.status
 
     if data[:ActionCode] == 'APPROVE'
       transaction.completed!
