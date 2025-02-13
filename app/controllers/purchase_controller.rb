@@ -1,6 +1,5 @@
 class PurchaseController < MessageController
   def process(_transport, _message_type, data)
-    puts data.to_json
     transaction = Transaction.find_by transaction_id: data[:TransactionId]
     transaction.update(
       card_number: data[:CardNumber],
