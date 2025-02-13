@@ -38,8 +38,10 @@ namespace :connect do
 
     Esocket::Transport.send_message Esocket::Messages.initialize_terminal
 
-    start_rails_server
+    sleep while true
+
     puts 'Press Ctrl+C to exit'
+    sleep while true
   rescue StandardError
     puts 'retrying....'
     sleep 4
