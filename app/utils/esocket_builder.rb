@@ -29,12 +29,12 @@ class EsocketBuilder
 
   def self.transcation(xml, amount, terminal_id, transcation_id)
     xml.Transaction('TransactionAmount' => amount, 'TerminalId' => terminal_id, 'Type' => 'PURCHASE',
-      'TransactionId' => transcation_id,) do
+      'TransactionId' => transcation_id, 'CurrencyCode' => 840) do
     end
   end
 
   def self.reversal(xml, transcation_id, terminal_id)
     xml.Transaction('TerminalId' => terminal_id, 'Type' => 'PURCHASE',
-      'TransactionId' => transcation_id, 'Reversal' => 'TRUE',)
+      'TransactionId' => transcation_id, 'Reversal' => 'TRUE', 'CurrencyCode' => 840)
   end
 end
