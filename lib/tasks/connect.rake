@@ -9,10 +9,10 @@ namespace :connect do
       vending_transport.on_message 'MACHINE_STATUS' do |data, _length|
       end
 
-      transport = Esocket::Transport.connect
+      #      transport = Esocket::Transport.connect
       vending_transport.connect
 
-      Esocket::Transport.send_message Esocket::Messages.initialize_terminal
+      #      Esocket::Transport.send_message Esocket::Messages.initialize_terminal
 
       puts 'Press Ctrl+C to exit'
       sleep while true
