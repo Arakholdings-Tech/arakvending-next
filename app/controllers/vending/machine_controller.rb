@@ -1,6 +1,7 @@
 class Vending::MachineController < MessageController
   def status(transport, command, data)
     machine_id = data[15..24].pack('C*')
+    puts machine_id.inspect
     if Machine.any?
       Machine.first.update(machine_id: machine_id)
     else

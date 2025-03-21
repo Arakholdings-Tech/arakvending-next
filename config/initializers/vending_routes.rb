@@ -5,5 +5,6 @@ Rails.application.config.to_prepare do
     command 'SET_SELECTION_INVENTORY', to: 'vending/selection#inventory'
     command 'MACHINE_STATUS', to: 'vending/machine#status'
     command 'SET_SELECTION_PRICE', to: 'vending/selection#price'
+    command 'DISPENSING_STATUS', to: 'vending/selection#dispensing'
   end
 end
