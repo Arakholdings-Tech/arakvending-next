@@ -38,12 +38,31 @@ This software must run on startup and to archive this, install, `supervisor`
 ```bash
 sudo apt-get install supervisor
 ```
+Enable the supervisor service
+```bash
+sudo systemctl enable --now supervisor
+```
 
 Add the following configuration to run this program using supervisor
 ```bash
 sudo nano /etc/supervisor/conf.d/vending.conf
 ```
+
 add the following config
 ```bash
 TODO: supervisor config
 ```
+
+Save and reload supervisor
+
+```bash
+sudo supervisorctl reload
+```
+
+```bash
+sudo supervisorctl start "vending:*"
+```
+
+The POS device should initialize
+
+
