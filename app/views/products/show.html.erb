@@ -1,10 +1,56 @@
-<p style="color: green"><%= notice %></p>
+<section class="py-8 bg-white md:py-16 dark:bg-gray-900 antialiased h-screen">
+  <div class="max-w-screen-xl px-4 mx-auto 2xl:px-0">
+    <div class="lg:grid lg:grid-cols-2 lg:gap-8 xl:gap-16">
+      <div class="shrink-0 max-w-md lg:max-w-lg mx-auto">
+        <img
+          class="w-full dark:hidden"
+          src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg"
+          alt=""
+        />
+        <img
+          class="w-full hidden dark:block"
+          src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front-dark.svg"
+          alt=""
+        />
+      </div>
 
-<%= render @product %>
+      <div class="mt-6 sm:mt-8 lg:mt-0">
+        <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">
+          <%= @product.selection %>
+        </h1>
+        <div class="mt-4 sm:items-center sm:gap-4 sm:flex">
+          <p class="text-2xl font-extrabold text-gray-900 sm:text-3xl dark:text-white">
+            $<%= @product.price %>
+          </p>
+        </div>
 
-<div>
-  <%= link_to "Edit this product", edit_product_path(@product) %> |
-  <%= link_to "Back to products", products_path %>
+        <div class="mt-6 sm:gap-4 sm:items-center sm:flex sm:mt-8">
+          <a
+            href="<%= cancel_product_path @product %>"
+            data-turbo-method="delete"
+            class="
+              flex items-center justify-center py-2.5 px-5 text-sm font-medium text-gray-900
+              focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100
+              hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-100
+              dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400
+              dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700
+            "
+            role="button"
+          >
+            Cancel
+          </a>
+        </div>
 
-  <%= button_to "Destroy this product", @product, method: :delete %>
-</div>
+        <hr class="my-6 md:my-8 border-gray-200 dark:border-gray-800"/>
+
+        <p class="mb-6 text-gray-500 dark:text-gray-400">
+          Press the Green button on POS machine to pay with Ecocash
+        </p>
+
+        <p class="text-gray-500 dark:text-gray-400">
+          Tap or insert card to pay with card
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

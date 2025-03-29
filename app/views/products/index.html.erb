@@ -1,16 +1,12 @@
-<p style="color: green"><%= notice %></p>
-
-<% content_for :title, "Products" %>
-
-<h1>Products</h1>
-
-<div id="products">
-  <% @products.each do |product| %>
-    <%= render product %>
-    <p>
-      <%= link_to "Show this product", product %>
-    </p>
-  <% end %>
-</div>
-
-<%= link_to "New product", new_product_path %>
+<section class="bg-gray-50 py-8 antialiased dark:bg-gray-900 md:py-12">
+  <div class="mx-auto px-4">
+    <!-- Heading & Filters -->
+    <div
+      class="
+        mb-4 grid gap-4 sm:grid-cols-2 md:mb-8 lg:grid-cols-3 xl:grid-cols-6
+      "
+    >
+      <%= render @products %>
+    </div>
+  </div>
+</section>

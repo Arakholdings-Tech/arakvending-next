@@ -1,27 +1,33 @@
-<div id="<%= dom_id product %>">
-  <p>
-    <strong>Mechine:</strong>
-    <%= product.mechine_id %>
-  </p>
+<a
+  href="<%= product_path product %>"
+  class="
+    rounded border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700
+    dark:bg-gray-800
+  "
+>
+  <div class="h-56 w-full">
+    <img
+      class="mx-auto h-full dark:hidden"
+      src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg"
+      alt=""
+    />
+    <img
+      class="mx-auto hidden h-full dark:block"
+      src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front-dark.svg"
+      alt=""
+    />
+  </div>
+  <div class="pt-6">
 
-  <p>
-    <strong>Name:</strong>
-    <%= product.name %>
-  </p>
+    <div
+      class="
+        text-lg font-semibold leading-tight text-gray-900 hover:underline
+        dark:text-white
+      "
+    ><%= product.selection %></div>
 
-  <p>
-    <strong>Price:</strong>
-    <%= product.price %>
-  </p>
-
-  <p>
-    <strong>Selection:</strong>
-    <%= product.selection %>
-  </p>
-
-  <p>
-    <strong>Quantity:</strong>
-    <%= product.quantity %>
-  </p>
-
-</div>
+    <div class="mt-4 flex items-center justify-between gap-4">
+      <p class="text-2xl font-extrabold leading-tight text-gray-900 dark:text-white">$<%= product.price %></p>
+    </div>
+  </div>
+</a>

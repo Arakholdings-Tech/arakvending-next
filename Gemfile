@@ -71,3 +71,7 @@ gem "rubocop-performance", "~> 1.23"
 gem "money-rails", "~> 1.15"
 
 gem "dotenv", "~> 3.1"
+
+gem "cssbundling-rails", "~> 1.4"
+
+gem "jsbundling-rails", "~> 1.3"

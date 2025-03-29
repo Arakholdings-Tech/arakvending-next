@@ -4,7 +4,7 @@ class Vending::Messages
     ack: 0x42,
     machine_status: 0x52,
     request_sync_info: 0x31,
-    select_buy: 0x06,
+    select_buy: 0x03,
     select_selection: 0x05,
     dispensing_status: 0x04,
     report_selection: 0x11,
@@ -25,8 +25,14 @@ class Vending::Messages
       data.bytes.reduce(0) { |sum, byte| sum ^ byte }
     end
 
-    def recieve_money(amount)
+    def recieve_money(_amount)
       data = [0xfa, 0xfb, COMMANDS[:recieve_money], 0x06, HexGenerator.next, 0x03, 0, 20, 0, 0]
+      data << calculate_bcc(data.pack('C*'))
+      data.pack('C*')
+    end
+
+    def select_buy(selection)
+      data = [0xfa, 0xfb, COMMANDS[:select_buy], 0x03, HexGenerator.next, 0, selection]
       data << calculate_bcc(data.pack('C*'))
       data.pack('C*')
     end

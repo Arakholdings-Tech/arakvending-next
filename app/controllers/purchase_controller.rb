@@ -18,11 +18,15 @@ class PurchaseController < MessageController
       transaction.payment.completed!
 
       Vending::Transport.send_message Vending::Messages.recieve_money((transaction.amount * 100).to_i)
+
+      ActionCable.server.broadcast('payment_channel', { transaction: transaction, success: true })
     else
       transaction.failed!
       transaction.payment.incomplete!
 
       Vending::Transport.send_message Vending::Messages.cancel_selection
+
+      ActionCable.server.broadcast('payment_channel', { transaction: transaction, success: false })
     end
   end
 end
