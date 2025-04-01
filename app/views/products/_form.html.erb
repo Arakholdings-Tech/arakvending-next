@@ -1,7 +1,8 @@
 <%= form_with(model: product) do |form| %>
   <% if product.errors.any? %>
     <div style="color: red">
-      <h2><%= pluralize(product.errors.count, "error") %> prohibited this product from being saved:</h2>
+      <h2><%= pluralize(product.errors.count, "error") %>
+        prohibited this product from being saved:</h2>
 
       <ul>
         <% product.errors.each do |error| %>
@@ -11,32 +12,38 @@
     </div>
   <% end %>
 
-  <div>
-    <%= form.label :mechine_id, style: "display: block" %>
-    <%= form.text_field :mechine_id %>
-  </div>
-
-  <div>
+  <div class="mb-3">
     <%= form.label :name, style: "display: block" %>
     <%= form.text_field :name %>
   </div>
 
-  <div>
+  <div class="mb-3">
     <%= form.label :price, style: "display: block" %>
     <%= form.text_field :price %>
   </div>
 
-  <div>
+  <div class="mb-3">
     <%= form.label :selection, style: "display: block" %>
     <%= form.number_field :selection %>
   </div>
 
-  <div>
+  <div class="mb-3">
     <%= form.label :quantity, style: "display: block" %>
     <%= form.number_field :quantity %>
   </div>
 
-  <div>
-    <%= form.submit %>
+  <div class="mb-3">
+    <%= form.label :picture %>
+    <%= form.file_field :picture %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.submit class:
+                  "w-full rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm
+                font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10
+                focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600
+                dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white
+                dark:focus:ring-gray-700 sm:w-auto
+        " %>
   </div>
 <% end %>

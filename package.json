@@ -1,6 +1,6 @@
 {
   "name": "app",
-  "packageManager": "yarn@4.8.0",
+  "packageManager": "yarn@4.8.1",
   "dependencies": {
     "@hotwired/stimulus": "^3.2.2",
     "@hotwired/turbo-rails": "^8.0.13",

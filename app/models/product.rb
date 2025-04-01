@@ -1,6 +1,7 @@
 class Product < ApplicationRecord
   belongs_to :machine
   has_many :payments, dependent: :destroy
+  has_one_attached :picture
 
   monetize :price_cents, as: 'price'
 
