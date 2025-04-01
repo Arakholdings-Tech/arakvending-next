@@ -5,16 +5,7 @@
         <% if @product.picture.attached? %>
           <%= image_tag @product.picture, class: "w-full" %>
         <% else %>
-          <img
-            class="w-full dark:hidden"
-            src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg"
-            alt=""
-          />
-          <img
-            class="w-full hidden dark:block"
-            src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front-dark.svg"
-            alt=""
-          />
+          <%= image_tag "image.webp", class: "w-full" %>
         <% end %>
       </div>
 
