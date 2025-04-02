@@ -20,13 +20,30 @@ class Events::Dispatcher
 
     def register_handler(event, handler)
       handler_key = "#{event}:#{handler.name}"
-      return if registered_handlers.include?(handler_key)
-
-      ActiveSupport::Notifications.subscribe(event) do |*args|
-        handler.handle(args.last)
+      
+      # Check if this handler is already registered using a shared resource
+      lock_file = Rails.root.join('tmp', "event_handler_#{handler_key.gsub(/[^a-z0-9_-]/i, '_')}.lock")
+      
+      File.open(lock_file, File::RDWR | File::CREAT, 0644) do |f|
+        if f.flock(File::LOCK_EX | File::LOCK_NB)
+          # We got the lock, perform the subscription
+          ActiveSupport::Notifications.subscribe(event) do |*args|
+            handler.handle(args.last)
+          end
+          
+          # Write to the file to indicate registration
+          f.truncate(0)
+          f.write("#{Process.pid} registered at #{Time.now}")
+          f.flush
+          
+          # Keep the lock for the lifetime of the process
+          at_exit { f.flock(File::LOCK_UN) }
+          
+          Rails.logger.info "Registered handler #{handler.name} for event #{event}"
+        else
+          Rails.logger.info "Handler #{handler.name} for event #{event} already registered in another process"
+        end
       end
-
-      registered_handlers.add(handler_key)
     end
   end
 end
