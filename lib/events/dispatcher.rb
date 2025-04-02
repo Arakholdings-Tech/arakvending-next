@@ -39,9 +39,9 @@ class Events::Dispatcher
           # Keep the lock for the lifetime of the process
           at_exit { f.flock(File::LOCK_UN) }
           
-          Rails.logger.info "Registered handler #{handler.name} for event #{event}"
+          puts "Registered handler #{handler.name} for event #{event}"
         else
-          Rails.logger.info "Handler #{handler.name} for event #{event} already registered in another process"
+          puts "Handler #{handler.name} for event #{event} already registered in another process"
         end
       end
     end
