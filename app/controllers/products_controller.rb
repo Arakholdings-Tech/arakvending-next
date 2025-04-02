@@ -15,7 +15,6 @@ class ProductsController < ApplicationController
 
     payment = @product.payments.create(amount: @product.price, status: 'queued')
 
-    # Vending::Transport.send_message Vending::Messages.recieve_money(100.to_i)
     Payments::Queued.trigger(payment)
   end
 
