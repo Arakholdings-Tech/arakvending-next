@@ -1,5 +1,5 @@
 class ProductsController < ApplicationController
-  before_action :set_product, only: [:show, :edit, :update, :destroy, :cancel, :select]
+  before_action :set_product, only: [ :show, :edit, :update, :destroy, :cancel, :select ]
 
   # GET /products or /products.json
   def index
@@ -13,9 +13,9 @@ class ProductsController < ApplicationController
   def select
     Vending::Transport.send_message Vending::Messages.select_buy(@product.selection)
 
-    payment = @product.payments.create(amount: @product.price, status: 'queued')
+    payment = @product.payments.create(amount: @product.price, status: "queued")
 
-    Payments::Queued.trigger(payment)
+    ProcessPaymentJob.perform_later(payment)
   end
 
   def cancel
@@ -39,7 +39,7 @@ class ProductsController < ApplicationController
 
     respond_to do |format|
       if @product.save
-        format.html { redirect_to @product, notice: 'Product was successfully created.' }
+        format.html { redirect_to @product, notice: "Product was successfully created." }
         format.json { render :show, status: :created, location: @product }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -52,7 +52,7 @@ class ProductsController < ApplicationController
   def update
     respond_to do |format|
       if @product.update(product_params)
-        format.html { redirect_to @product, notice: 'Product was successfully updated.' }
+        format.html { redirect_to @product, notice: "Product was successfully updated." }
         format.json { render :show, status: :ok, location: @product }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -66,7 +66,7 @@ class ProductsController < ApplicationController
     @product.destroy!
 
     respond_to do |format|
-      format.html { redirect_to products_path, status: :see_other, notice: 'Product was successfully destroyed.' }
+      format.html { redirect_to products_path, status: :see_other, notice: "Product was successfully destroyed." }
       format.json { head :no_content }
     end
   end
@@ -80,6 +80,6 @@ class ProductsController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def product_params
-    params.expect(product: [:picture, :name, :price, :selection, :quantity])
+    params.expect(product: [ :picture, :name, :price, :selection, :quantity ])
   end
 end

@@ -1,9 +1,7 @@
-class Payments::ProcessPayment < Consumer
-  def handle(payload)
-    payment = payload[:payment]
-    return unless payment.queued?
-    payment.with_lock do
+class ProcessPaymentJob < ApplicationJob
+  queue_as :default
 
+  def perform(payment)
     payment.pending!
 
     transaction = payment.transactions.create(
@@ -13,6 +11,5 @@ class Payments::ProcessPayment < Consumer
     )
 
     Esocket::Transport.send_message(Esocket::Messages.transaction(transaction.amount_cents, transaction.transaction_id))
-    end
   end
 end

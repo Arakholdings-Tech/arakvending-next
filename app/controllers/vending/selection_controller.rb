@@ -3,7 +3,7 @@ class Vending::SelectionController < MessageController
 
   def selected(transport, command, data)
     seq_number, *selection_number = data
-    
+
     return if SEQ_NUMS.include? seq_number
 
     SEQ_NUMS << seq_number
@@ -14,10 +14,10 @@ class Vending::SelectionController < MessageController
     product = Product.find_by selection: selection
     nil if product.blank?
 
-    payment = product.payments.create(amount: product.price, status: 'queued')
+    payment = product.payments.create(amount: product.price, status: "queued")
 
     # Vending::Transport.send_message Vending::Messages.recieve_money(100.to_i)
-    Payments::Queued.trigger(payment)
+    ProcessPaymentJob.perform_later(payment)
   end
 
   def inventory(transport, command, data)
@@ -29,7 +29,7 @@ class Vending::SelectionController < MessageController
   def price(transport, command, data)
     _, _, selection, *price = data
     product = Product.find_by(selection: selection)
-    price = price.pack('C*').unpack1('N')
+    price = price.pack("C*").unpack1("N")
     product.update(price_cents: price)
   end
 
@@ -47,14 +47,14 @@ class Vending::SelectionController < MessageController
     when 0x03
       Rails.logger.error("Jamm on product #{selection_number}")
       Rails.logger.info("Issuing a refund at #{Time.current}")
-      puts 'jamm'
+      puts "jamm"
 
       Esocket::Transport.send_message(Esocket::Messages.reversal(
         product.payments.last.transactions.last.transaction_id,
       ))
     when 0x04
       Rails.logger.error("Motor doesn't stop on product #{selection_number}")
-      puts 'motor didnt stop'
+      puts "motor didnt stop"
 
       Rails.logger.info("Issuing a refund at #{Time.current}")
       Esocket::Transport.send_message(Esocket::Messages.reversal(
@@ -64,7 +64,7 @@ class Vending::SelectionController < MessageController
       Rails.logger.error("Motor doesn't exist on product #{selection_number}")
 
       Rails.logger.info("Issuing a refund at #{Time.current}")
-      puts 'motor not exisit'
+      puts "motor not exisit"
 
       Esocket::Transport.send_message(Esocket::Messages.reversal(
         product.payments.last.transactions.last.transaction_id,
@@ -72,7 +72,7 @@ class Vending::SelectionController < MessageController
     when 0x07
       Rails.logger.error("Elevator error on product #{selection_number}")
       Rails.logger.info("Issuing a refund at #{Time.current}")
-      puts 'elevator error'
+      puts "elevator error"
 
       Esocket::Transport.send_message(Esocket::Messages.reversal(
         product.payments.last.transactions.last.transaction_id,
