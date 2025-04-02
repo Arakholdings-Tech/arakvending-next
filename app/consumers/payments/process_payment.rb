@@ -1,7 +1,8 @@
 class Payments::ProcessPayment < Consumer
   def handle(payload)
     payment = payload[:payment]
-    return if payment.pending?
+    return unless payment.queued?
+    payment.with_lock do
 
     payment.pending!
 
@@ -12,5 +13,6 @@ class Payments::ProcessPayment < Consumer
     )
 
     Esocket::Transport.send_message(Esocket::Messages.transaction(transaction.amount_cents, transaction.transaction_id))
+    end
   end
 end
