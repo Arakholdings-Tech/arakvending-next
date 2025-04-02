@@ -6,4 +6,8 @@ class PaymentChannel < ApplicationCable::Channel
   def unsubscribed
     # Any cleanup needed when channel is unsubscribed
   end
+
+  def select(data)
+  puts data.inspect
+  end
 end

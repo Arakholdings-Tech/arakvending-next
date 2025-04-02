@@ -421,6 +421,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@rails/request.js@npm:^0.0.11":
+  version: 0.0.11
+  resolution: "@rails/request.js@npm:0.0.11"
+  checksum: 10c0/983f7278bed81d00f64e44183a4d3e3f98fd9488592da2f6446b1dc5ab89a466d1686722dce16d0c8defb4aba976bb2202885f84ab7bb3256768996f9aaea291
+  languageName: node
+  linkType: hard
+
 "@rollup/plugin-node-resolve@npm:^15.2.3":
   version: 15.3.1
   resolution: "@rollup/plugin-node-resolve@npm:15.3.1"
@@ -668,6 +675,7 @@ __metadata:
     "@hotwired/stimulus": "npm:^3.2.2"
     "@hotwired/turbo-rails": "npm:^8.0.13"
     "@rails/actioncable": "npm:^8.0.200"
+    "@rails/request.js": "npm:^0.0.11"
     "@tailwindcss/cli": "npm:^4.0.17"
     esbuild: "npm:^0.25.1"
     flowbite: "npm:^3.1.2"

@@ -5,7 +5,12 @@ class Vending::AckController < MessageController
     rescue StandardError
       nil
     end
-    puts message.inspect
-    transport.write_message message || Vending::Messages.ack
+  if message.nil?
+      
+          transport.write_message Vending::Messages.ack
+    else
+      puts message.inspect
+    transport.write_message message 
+end
   end
 end

@@ -25,14 +25,25 @@ class Vending::Messages
       data.bytes.reduce(0) { |sum, byte| sum ^ byte }
     end
 
-    def recieve_money(_amount)
-      data = [0xfa, 0xfb, COMMANDS[:recieve_money], 0x06, HexGenerator.next, 0x03, 0, 20, 0, 0]
+    def request_sync_info
+      data = [0xfa, 0xfb, COMMANDS[:request_sync_info], 1, HexGenerator.next]
+      data << calculate_bcc(data.pack('C*'))
+      data.pack('C*')
+    end
+
+    def recieve_money(amount)
+      amount_payload = amount.to_s.split('')
+      cents = amount_payload.last(2)
+      dollars = amount_payload.slice(0, amount_payload.length - 2)
+      amount_formatted = [dollars.join, *cents]
+      
+      data = [0xfa, 0xfb, COMMANDS[:recieve_money], 0x06, HexGenerator.next, 0x03, 0, *amount_formatted]
       data << calculate_bcc(data.pack('C*'))
       data.pack('C*')
     end
 
     def select_buy(selection)
-      data = [0xfa, 0xfb, COMMANDS[:select_buy], 0x03, HexGenerator.next, 0, selection]
+      data = [0xfa, 0xfb, 0x03, 3, HexGenerator.next,0, selection]
       data << calculate_bcc(data.pack('C*'))
       data.pack('C*')
     end

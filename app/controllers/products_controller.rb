@@ -1,5 +1,5 @@
 class ProductsController < ApplicationController
-  before_action :set_product, only: [:show, :edit, :update, :destroy, :cancel]
+  before_action :set_product, only: [:show, :edit, :update, :destroy, :cancel, :select]
 
   # GET /products or /products.json
   def index
@@ -8,7 +8,15 @@ class ProductsController < ApplicationController
 
   # GET /products/1 or /products/1.json
   def show
+  end
+
+  def select
     Vending::Transport.send_message Vending::Messages.select_buy(@product.selection)
+
+    payment = @product.payments.create(amount: @product.price, status: 'queued')
+
+    # Vending::Transport.send_message Vending::Messages.recieve_money(100.to_i)
+    Payments::Queued.trigger(payment)
   end
 
   def cancel

@@ -3,6 +3,7 @@ class Vending::SelectionController < MessageController
 
   def selected(transport, command, data)
     seq_number, *selection_number = data
+    
     return if SEQ_NUMS.include? seq_number
 
     SEQ_NUMS << seq_number
