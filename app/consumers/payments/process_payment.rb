@@ -1,7 +1,7 @@
 class Payments::ProcessPayment < Consumer
   def handle(payload)
-    puts payload.inspect
     payment = payload[:payment]
+    return if payment.pending?
 
     payment.pending!
 
