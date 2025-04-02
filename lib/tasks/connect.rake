@@ -6,8 +6,7 @@ namespace :connect do
       dns_resolver.getaddress('symbolics.com') # the first domain name ever. Will probably not be removed ever.
       vending_transport = Vending::Transport.new
 
-      vending_transport.on_message 'MACHINE_STATUS' do |data, _length|
-      end
+      Vending::Transport.send_message Vending::Messages.request_sync_info
 
       transport = Esocket::Transport.connect
       vending_transport.connect
