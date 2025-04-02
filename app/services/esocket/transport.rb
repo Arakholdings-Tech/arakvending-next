@@ -1,4 +1,4 @@
-class Esocket::Transport
+class Esocket::Transport < Transport
   SMALL_MESSAGE_MAX = 65_535 # 2^16 - 1
   TWO_BYTE_HEADER_SIZE = 2
   SIX_BYTE_HEADER_SIZE = 6
@@ -90,7 +90,7 @@ class Esocket::Transport
         begin
           # Dequeue message with timeout to allow checking @running
           message = begin
-            Esocket::Transport.write_queue.pop(true)
+            Esocket::Transport.next_message('esocket')
           rescue StandardError
             nil
           end
@@ -223,7 +223,7 @@ class Esocket::Transport
   end
 
   def self.send_message(data)
-    write_queue.push(data)
+    super(data, 'esocket')
   end
 
   def message_queue_size
