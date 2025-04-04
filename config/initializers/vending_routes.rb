@@ -6,6 +6,6 @@ Rails.application.config.to_prepare do
     command "MACHINE_STATUS", to: "vending/machine#status"
     command "SET_SELECTION_PRICE", to: "vending/selection#price"
     command "DISPENSING_STATUS", to: "vending/selection#dispensing"
-    #    command 'ACK', to: 'vending/ack#handle'
+    command "ACK", to: "vending/ack#handle"
   end
 end
