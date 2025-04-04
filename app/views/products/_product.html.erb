@@ -8,9 +8,9 @@
   <div class="h-56 w-full">
 
     <% if product.picture.attached? %>
-      <%= image_tag product.picture, class: "h-full" %>
+      <%= image_tag product.picture, class: "h-full w-full" %>
     <% else %>
-      <%= image_tag "image.webp", class: "h-full" %>
+      <%= image_tag "image.webp", class: "h-full w-full" %>
     <% end %>
   </div>
   <div class="pt-6">

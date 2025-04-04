@@ -3,10 +3,14 @@
     <!-- Heading & Filters -->
     <div
       class="
-        mb-4 grid gap-4 sm:grid-cols-2 md:mb-8 lg:grid-cols-3 xl:grid-cols-6
+        mb-4 grid gap-4 sm:grid-cols-2 md:mb-8 lg:grid-cols-5 xl:grid-cols-6
       "
     >
       <%= render @products %>
+    </div>
+
+    <div class="mt-8 flex items-center justify-between">
+      <%= paginate @products %>
     </div>
   </div>
 </section>
