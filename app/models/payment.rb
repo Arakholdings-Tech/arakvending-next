@@ -7,4 +7,8 @@ class Payment < ApplicationRecord
   enum :status,
     { queued: 'queued', pending: 'pending', processing: 'processing', completed: 'completed',
       incomplete: 'incomplete', }
+
+  def transaction
+    transactions.last
+  end
 end

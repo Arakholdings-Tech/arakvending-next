@@ -8,6 +8,10 @@ class Product < ApplicationRecord
   after_save_commit :update_price
   after_save_commit :update_quantity
 
+  def payment
+    payments.last
+  end
+
   def update_price
     return unless saved_change_to_price_cents?
 

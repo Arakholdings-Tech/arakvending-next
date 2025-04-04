@@ -22,4 +22,14 @@ class Esocket::Messages
       EsocketBuilder.reversal(xml, transaction_id, Esocket.config.terminal_id)
     end
   end
+
+  def self.callback(event_id, event_data)
+    EsocketBuilder.build_interface do |xml|
+      EsocketBuilder.callback(xml, event_id, Esocket.config.terminal_id, event_data)
+    end
+  end
+
+  def self.cancel_transaction(transaction_id)
+    callback('CANCEL_TRAN', transaction_id)
+  end
 end
