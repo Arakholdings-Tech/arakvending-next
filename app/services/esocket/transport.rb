@@ -85,8 +85,7 @@ class Esocket::Transport < Transport
 
   def start_write_thread
     @write_thread = Thread.new do
-      while @running
-
+      while true
         begin
           # Dequeue message with timeout to allow checking @running
           message = begin
@@ -99,12 +98,12 @@ class Esocket::Transport < Transport
             Rails.logger.info(message.inspect)
             write_message_with_retry(message)
           else
-            # No message available, sleep briefly
             sleep 0.1
+            next
           end
         rescue IOError, Errno::EPIPE => e
           puts "Write error: #{e.message}"
-          break
+          next
         end
       end
     end
