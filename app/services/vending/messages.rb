@@ -37,7 +37,7 @@ class Vending::Messages
       dollars = amount_payload.slice(0, amount_payload.length - 2)
       amount_formatted = [ dollars.join, *cents ].map(&:to_i)
 
-      data = [ 0xfa, 0xfb, COMMANDS[:recieve_money], 0x06, HexGenerator.next, 0x03, 0, *amount_formatted ]
+      data = [ 0xfa, 0xfb, COMMANDS[:recieve_money], 0x06, HexGenerator.next, 0x03, 0, 20,0,0 ]
       data << calculate_bcc(data.pack("C*"))
       data.pack("C*")
     end
