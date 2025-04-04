@@ -95,7 +95,7 @@ class Esocket::Transport < Transport
           end
           puts message.inspect
           if message
-            Rails.logger.info(message.inspect)
+            puts message.inspect
             write_message_with_retry(message)
           else
             sleep 0.1
