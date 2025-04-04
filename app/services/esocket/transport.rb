@@ -93,7 +93,6 @@ class Esocket::Transport < Transport
           rescue StandardError
             nil
           end
-          puts message.inspect
           if message
             puts message.inspect
             write_message_with_retry(message)
