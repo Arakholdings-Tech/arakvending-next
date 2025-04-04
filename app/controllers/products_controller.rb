@@ -13,9 +13,9 @@ class ProductsController < ApplicationController
   def select
     Vending::Transport.send_message Vending::Messages.select_buy(@product.selection)
 
-    # payment = @product.payments.create(amount: @product.price, status: "queued")
+    payment = @product.payments.create(amount: @product.price, status: "queued")
 
-    #    ProcessPaymentJob.perform_later(payment)
+    ProcessPaymentJob.perform_later(payment)
   end
 
   def cancel
