@@ -21,7 +21,7 @@ class ProductsController < ApplicationController
   def cancel
     Vending::Transport.send_message Vending::Messages.cancel_selection
 
-    Esocket::Transport.send_message Esocket::Messages.cancel_transaction(@product.payment&.transaction&.transaction_id)
+    Esocket::Transport.send_message(Esocket::Messages.cancel_transaction(@product.payment&.transaction&.transaction_id))
 
     redirect_to products_path
   end

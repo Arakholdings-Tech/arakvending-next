@@ -95,6 +95,7 @@ class Esocket::Transport < Transport
             nil
           end
           if message
+            puts message.inspect
             write_message_with_retry(message)
           else
             # No message available, sleep briefly

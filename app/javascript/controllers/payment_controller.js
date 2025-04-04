@@ -7,8 +7,6 @@ export default class extends Controller {
   hasPosted = false;
 
   connect() {
-    //post(this.urlValue);
-    // Only make the POST request if we haven't already
     if (!this.hasPosted) {
       post(this.urlValue);
       this.hasPosted = true;
