@@ -14,8 +14,11 @@ class Vending::Transport < Transport
     Thread.new do
       loop do
         next unless @serial.wait_readable
-
-        start1, start2 = @serial.read(2).bytes
+        buffer = @serial.read(2)
+        
+        next if buffer.nil?
+        
+        start1, start2 = buffer.bytes
 
         unless start1 == 0xfa && start2 == 0xfb
           @serial.read
