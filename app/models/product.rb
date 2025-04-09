@@ -8,6 +8,8 @@ class Product < ApplicationRecord
   after_save_commit :update_price
   after_save_commit :update_quantity
 
+  scope :operational, -> { where(operational: true) }
+
   def payment
     payments.last
   end

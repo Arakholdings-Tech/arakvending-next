@@ -48,6 +48,7 @@ class Vending::SelectionController < MessageController
       Rails.logger.error("Jamm on product #{selection_number}")
       Rails.logger.info("Issuing a refund at #{Time.current}")
       puts "jamm"
+      product.update!(operational: false)
 
       Esocket::Transport.send_message(Esocket::Messages.reversal(
         product.payments.last.transactions.last.transaction_id,
