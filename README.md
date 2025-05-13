@@ -43,24 +43,28 @@ Enable the supervisor service
 sudo systemctl enable --now supervisor
 ```
 
-Add the following configuration to run this program using supervisor
+Add the following configuration to run this program using supervisor.
+Change directory into the vending software you jus cloned from github
 ```bash
-sudo nano /etc/supervisor/conf.d/vending.conf
+cd arakvending-next
 ```
-
-add the following config
+Copy the config file to allow supervisor to start the program 
 ```bash
-TODO: supervisor config
+cp config/vending.conf /etc/supervisor/conf.d/
+```
+Initialize the database
+```bash
+rails db:prepare
 ```
 
 Save and reload supervisor
 
 ```bash
-sudo supervisorctl reload
+sudo mkdir /var/log/rails -p  && sudo chown system:sytem -R /var/log/rails && sudo supervisorctl reread && sudo supervisorctl update
 ```
 
 ```bash
-sudo supervisorctl start "vending:*"
+sudo supervisorctl start all
 ```
 
 The POS device should initialize
